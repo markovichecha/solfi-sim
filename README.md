@@ -8,8 +8,9 @@ in-memory. I've included the state of those accounts at slot `333456106` and thi
 re-fetch
 
 Why not just run simulations against an RPC node? You could but if you want to understand the full curve you'll need to
-make hundreds of requests. It's more efficient to run to play around with the states locally, and this is a good
-starting point.
+make hundreds of requests. It's more efficient and fun to play around with the states locally, and this is a good
+starting point. And more importantly, if you run against an RPC node, you can't guarantee that your requests will all run against the same slot.
+These SolFi pools appear to update every slot, and running against the fetched state in a local SVM provides better simulation guarantees there.
 
 ### Build
 
