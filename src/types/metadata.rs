@@ -37,11 +37,7 @@ impl Display for FetchMetadata {
         if self.slot_lower == self.slot_upper {
             write!(f, "fetched at slot {}", self.slot_lower)
         } else {
-            write!(
-                f,
-                "fetched between slots {} and {}",
-                self.slot_lower, self.slot_upper
-            )
+            write!(f, "fetched between slots {} and {}", self.slot_lower, self.slot_upper)
         }
     }
 }

@@ -55,9 +55,8 @@ impl AccountWithAddress {
             if path.is_file()
                 && path
                     .file_name()
-                    .and_then(|n| n.to_str()).is_some_and(|name| {
-                        name.starts_with("account_") && name.ends_with(".json")
-                    })
+                    .and_then(|n| n.to_str())
+                    .is_some_and(|name| name.starts_with("account_") && name.ends_with(".json"))
             {
                 accounts.push(Self::read_account(path)?);
             }

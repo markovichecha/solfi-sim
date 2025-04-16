@@ -25,11 +25,8 @@ const USDC_DECIMALS: i32 = 6;
 pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> eyre::Result<()> {
     let user_keypair = Keypair::new();
     let user = user_keypair.pubkey();
-    let mut svm = LiteSVM::new()
-        .with_sysvars()
-        .with_precompiles()
-        .with_sigverify(true)
-        .with_spl_programs();
+    let mut svm =
+        LiteSVM::new().with_sysvars().with_precompiles().with_sigverify(true).with_spl_programs();
 
     for acct in AccountWithAddress::read_all()? {
         svm.set_account(acct.address, acct.account)?;
@@ -41,8 +38,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
 
     let swap_amount_in_lamports = sol_to_lamports(amount.unwrap_or(DEFAULT_SWAP_AMOUNT));
     let airdrop_amount = swap_amount_in_lamports * 4 + sol_to_lamports(1.0); // 4 pools + some buffer
-    svm.airdrop(&user, airdrop_amount)
-        .map_err(|e| eyre!("failed to airdrop: {}", e.err))?;
+    svm.airdrop(&user, airdrop_amount).map_err(|e| eyre!("failed to airdrop: {}", e.err))?;
 
     let wsol_ata = get_associated_token_address(&user, &WSOL);
     let usdc_ata = get_associated_token_address(&user, &USDC);
@@ -76,9 +72,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
         );
 
         let sol_in = lamports_to_sol(swap_amount_in_lamports);
-        let mut wtr = WriterBuilder::new()
-            .has_headers(false)
-            .from_writer(stdout());
+        let mut wtr = WriterBuilder::new().has_headers(false).from_writer(stdout());
 
         match svm.send_transaction(tx) {
             Ok(_) => {

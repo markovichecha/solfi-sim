@@ -20,10 +20,7 @@ pub fn display_cutoffs() {
     }
     for market in SOLFI_MARKETS {
         if let Ok((cutoff, generated)) = mm_metadata(market) {
-            println!(
-                "{} cutoff slot={}, generated slot={}",
-                market, cutoff, generated
-            );
+            println!("{} cutoff slot={}, generated slot={}", market, cutoff, generated);
         }
     }
 }

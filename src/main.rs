@@ -27,22 +27,17 @@ async fn main() -> eyre::Result<()> {
         Command::FetchAccounts => {
             let rpc_url = {
                 let _ = dotenv().ok();
-                std::env::var("RPC_URL")
-                    .ok()
-                    .filter(|url| !url.trim().is_empty())
-                    .unwrap_or_else(|| {
+                std::env::var("RPC_URL").ok().filter(|url| !url.trim().is_empty()).unwrap_or_else(
+                    || {
                         tracing::warn!("No RPC_URL found in env. Using {}", DEFAULT_RPC_URL);
                         DEFAULT_RPC_URL.to_string()
-                    })
+                    },
+                )
             };
             fetch_and_persist_accounts(rpc_url).await?
         }
         Command::Cutoffs => display_cutoffs(),
-        Command::Simulate {
-            amount,
-            slot,
-            ignore_errors,
-        } => simulate(amount, slot, ignore_errors)?,
+        Command::Simulate { amount, slot, ignore_errors } => simulate(amount, slot, ignore_errors)?,
     }
 
     Ok(())

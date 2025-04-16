@@ -25,10 +25,7 @@ pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
         .iter()
         .zip(addresses)
         .filter_map(|(account, address)| {
-            Some(AccountWithAddress {
-                address,
-                account: account.clone()?,
-            })
+            Some(AccountWithAddress { address, account: account.clone()? })
         })
         .collect::<Vec<_>>();
 
@@ -36,10 +33,7 @@ pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
         result.save_to_file()?;
     }
 
-    let metadata = FetchMetadata {
-        slot_lower,
-        slot_upper,
-    };
+    let metadata = FetchMetadata { slot_lower, slot_upper };
     metadata.save_to_file()?;
     tracing::info!("Done");
 
