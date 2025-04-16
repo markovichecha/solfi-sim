@@ -78,7 +78,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
                     market: market.to_string(),
                     sol_in,
                     usdc_out: Some(usdc_out as f64 / 10f64.powi(USDC_DECIMALS)),
-                    error: String::new(),
+                    error: None,
                 })?;
             }
             Err(err) => {
@@ -87,7 +87,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
                         market: market.to_string(),
                         sol_in,
                         usdc_out: None,
-                        error: err.err.to_string(),
+                        error: Some(err.err.to_string()),
                     })?;
                 }
             }
@@ -103,5 +103,5 @@ struct SwapResult {
     market: String,
     sol_in: f64,
     usdc_out: Option<f64>,
-    error: String,
+    error: Option<String>,
 }
