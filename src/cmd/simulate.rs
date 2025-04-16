@@ -8,8 +8,6 @@ use litesvm::LiteSVM;
 use solana_keypair::Keypair;
 use solana_message::Message;
 use solana_sdk::native_token::{lamports_to_sol, sol_to_lamports};
-use solana_sdk::program_pack::Pack;
-use solana_sdk::rent::Rent;
 use solana_signer::Signer;
 use solana_system_interface::instruction::transfer;
 use solana_transaction::Transaction;
@@ -42,7 +40,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
 
     let wsol_ata = get_associated_token_address(&user, &WSOL);
     let usdc_ata = get_associated_token_address(&user, &USDC);
-    let ata_rent = Rent::default().minimum_balance(spl_token::state::Account::LEN);
+    let mut wtr = WriterBuilder::new().has_headers(false).from_writer(stdout());
 
     for market in SOLFI_MARKETS {
         let usdc_starting = token_balance(&svm, &usdc_ata);
@@ -62,7 +60,7 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
                         &USDC,
                         &spl_token::id(),
                     ),
-                    transfer(&user, &wsol_ata, swap_amount_in_lamports + ata_rent),
+                    transfer(&user, &wsol_ata, swap_amount_in_lamports),
                     sync_native(&spl_token::id(), &wsol_ata)?,
                     create_swap_ix(market, &user, &WSOL, &USDC, swap_amount_in_lamports),
                 ],
@@ -72,7 +70,6 @@ pub fn simulate(amount: Option<f64>, slot: Option<u64>, ignore_errors: bool) -> 
         );
 
         let sol_in = lamports_to_sol(swap_amount_in_lamports);
-        let mut wtr = WriterBuilder::new().has_headers(false).from_writer(stdout());
 
         match svm.send_transaction(tx) {
             Ok(_) => {
