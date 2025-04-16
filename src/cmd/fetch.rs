@@ -24,7 +24,6 @@ pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
     let results = accounts
         .iter()
         .zip(addresses)
-        .into_iter()
         .filter_map(|(account, address)| {
             Some(AccountWithAddress {
                 address,

@@ -14,7 +14,7 @@ pub struct AccountWithAddress {
 
 impl AccountWithAddress {
     fn get_filename(&self) -> String {
-        format!("account_{}.json", self.address.to_string())
+        format!("account_{}.json", self.address)
     }
 
     pub fn save_to_file(&self) -> eyre::Result<()> {
@@ -55,8 +55,7 @@ impl AccountWithAddress {
             if path.is_file()
                 && path
                     .file_name()
-                    .and_then(|n| n.to_str())
-                    .map_or(false, |name| {
+                    .and_then(|n| n.to_str()).is_some_and(|name| {
                         name.starts_with("account_") && name.ends_with(".json")
                     })
             {
