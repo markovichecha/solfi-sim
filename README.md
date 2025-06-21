@@ -76,6 +76,18 @@ cp .env.sample .env
 ./target/release/solfi-sim cutoffs
 ```
 
+Simulate a swap in the other direction (USDC -> SOL)
+
+```shell
+./target/release/solfi-sim simulate -a 14600 --direction usdc-to-sol
+```
+
+Calculate spreads
+
+```shell
+ ./target/release/solfi-sim spreads 100
+```
+
 ## Disclaimer
 
 *This code is being provided as is. No guarantee, representation or warranty is being made, express or implied, as to
