@@ -10,6 +10,7 @@ use solana_keypair::Keypair;
 use solana_pubkey::Pubkey;
 use solana_sdk::native_token::sol_to_lamports;
 use solana_sdk::program_pack::Pack;
+use solana_sdk::rent::Rent;
 use solana_sdk::rent_collector::RENT_EXEMPT_RENT_EPOCH;
 use solana_signer::Signer;
 use solana_system_interface::instruction::transfer;
@@ -19,7 +20,6 @@ use spl_associated_token_account::instruction::create_associated_token_account_i
 use spl_token::instruction::sync_native;
 use spl_token::state::{Account as SplAccount, AccountState};
 use std::io::stdout;
-use solana_sdk::rent::Rent;
 
 const SOLFI_PROGRAM_PATH: &str = "data/solfi.so";
 const DEFAULT_SWAP_AMOUNT_SOL: f64 = 10.0;
@@ -62,7 +62,7 @@ pub fn simulate(
         svm.set_account(acct.address, acct.account)?;
     }
     svm.add_program_from_file(SOLFI_PROGRAM, SOLFI_PROGRAM_PATH)?;
-    if let Some(slot) = slot.or(FetchMetadata::read().map(|m| m.slot_lower)) {
+    if let Some(slot) = slot.or(FetchMetadata::read().map(|m| m.slot())) {
         svm.warp_to_slot(slot);
     }
 

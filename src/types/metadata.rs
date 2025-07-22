@@ -7,11 +7,18 @@ const FILE_PATH: &str = "data/metadata.json";
 
 #[derive(Serialize, Deserialize)]
 pub struct FetchMetadata {
-    pub slot_lower: u64,
-    pub slot_upper: u64,
+    slot: Option<u64>,
+
+    // backward-compatability
+    slot_lower: u64,
+    slot_upper: u64,
 }
 
 impl FetchMetadata {
+    pub fn new(slot: u64) -> Self {
+        Self { slot: Some(slot), slot_lower: slot, slot_upper: slot }
+    }
+
     pub fn read() -> Option<Self> {
         let path = PathBuf::from(FILE_PATH);
         if !path.exists() {
@@ -20,6 +27,10 @@ impl FetchMetadata {
         let content = fs::read_to_string(&path).ok()?;
         let metadata = serde_json::from_str(&content).ok()?;
         Some(metadata)
+    }
+
+    pub fn slot(&self) -> u64 {
+        self.slot.unwrap_or(self.slot_lower)
     }
 
     pub fn save_to_file(&self) -> eyre::Result<()> {
