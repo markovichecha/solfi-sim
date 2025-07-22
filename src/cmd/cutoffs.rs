@@ -7,7 +7,7 @@ const CUTOFF_OFFSET: usize = 488;
 const GEN_OFFSET: usize = 464;
 
 fn mm_metadata(market: &Pubkey) -> eyre::Result<(u64, u64)> {
-    let acct = AccountWithAddress::read_account(format!("data/account_{}.json", market).into())?;
+    let acct = AccountWithAddress::read_account(format!("data/account_{market}.json").into())?;
     Ok((
         u64_at_offset(acct.account.data.as_slice(), CUTOFF_OFFSET)?,
         u64_at_offset(acct.account.data.as_slice(), GEN_OFFSET)?,
@@ -16,11 +16,11 @@ fn mm_metadata(market: &Pubkey) -> eyre::Result<(u64, u64)> {
 
 pub fn display_cutoffs() {
     if let Some(metadata) = FetchMetadata::read() {
-        println!("== {} ==", metadata);
+        println!("== {metadata} ==");
     }
     for market in SOLFI_MARKETS {
         if let Ok((cutoff, generated)) = mm_metadata(market) {
-            println!("{} cutoff slot={}, generated slot={}", market, cutoff, generated);
+            println!("{market} cutoff slot={cutoff}, generated slot={generated}");
         }
     }
 }

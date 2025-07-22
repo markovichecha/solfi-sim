@@ -15,8 +15,7 @@ struct SpreadAnalysis {
 pub fn calculate_spread(usdc_amount_in: f64) -> eyre::Result<()> {
     display_cutoffs();
     println!(
-        "\nCalculating spreads based on a round trip starting with {:.2} USDC...\n",
-        usdc_amount_in
+        "\nCalculating spreads based on a round trip starting with {usdc_amount_in:.2} USDC...\n",
     );
 
     let buy_side_results =

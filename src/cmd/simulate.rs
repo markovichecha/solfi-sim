@@ -18,7 +18,7 @@ use solana_transaction::Transaction;
 use spl_associated_token_account::get_associated_token_address;
 use spl_associated_token_account::instruction::create_associated_token_account_idempotent;
 use spl_token::instruction::sync_native;
-use spl_token::state::{Account as SplAccount, AccountState};
+use spl_token::state::{Account as TokenAccount, AccountState};
 use std::io::stdout;
 
 const SOLFI_PROGRAM_PATH: &str = "data/solfi.so";
@@ -28,14 +28,14 @@ const SOL_DECIMALS: i32 = 9;
 const USDC_DECIMALS: i32 = 6;
 
 fn mk_ata_account(mint: &Pubkey, user: &Pubkey, amount: u64) -> Account {
-    let ata = SplAccount {
-        mint: mint.clone(),
-        owner: user.clone(),
+    let ata = TokenAccount {
+        mint: *mint,
+        owner: *user,
         amount,
         state: AccountState::Initialized,
         ..Default::default()
     };
-    let mut data = vec![u8::MAX; 165];
+    let mut data = vec![0u8; TokenAccount::LEN];
     ata.pack_into_slice(&mut data);
     Account {
         lamports: Rent::default().minimum_balance(data.len()),
