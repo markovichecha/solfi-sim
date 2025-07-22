@@ -15,9 +15,9 @@ pub enum Command {
         starting_usdc: f64,
     },
 
-    /// Simulate a WSOL -> USDC swap in all the solfi wsol/usdc pools
+    /// Simulate a swap in all the solfi wsol/usdc pools
     Simulate {
-        /// Amount of SOL to swap to USDC
+        /// Amount of SOL or USDC to swap. Input mint depends on --direction
         #[arg(short, long)]
         amount: Option<f64>,
 
