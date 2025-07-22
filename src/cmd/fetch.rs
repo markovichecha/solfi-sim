@@ -18,10 +18,11 @@ pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
         }))
         .collect();
     tracing::info!("Fetching accounts");
-    let slot_lower = client.get_slot().await?;
-    let accounts = client.get_multiple_accounts(&addresses).await?;
-    let slot_upper = client.get_slot().await?;
-    let results = accounts
+    let resp = client
+        .get_multiple_accounts_with_commitment(&addresses, CommitmentConfig::processed())
+        .await?;
+    let results = resp
+        .value
         .iter()
         .zip(addresses)
         .filter_map(|(account, address)| {
@@ -33,7 +34,7 @@ pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
         result.save_to_file()?;
     }
 
-    let metadata = FetchMetadata { slot_lower, slot_upper };
+    let metadata = FetchMetadata::new(resp.context.slot);
     metadata.save_to_file()?;
     tracing::info!("Done");
 

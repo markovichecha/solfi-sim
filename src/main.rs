@@ -6,7 +6,7 @@ mod types;
 mod utils;
 
 use crate::args::{App, Command};
-use crate::cmd::{display_cutoffs, fetch_and_persist_accounts, simulate};
+use crate::cmd::{calculate_spread, display_cutoffs, fetch_and_persist_accounts, simulate};
 use crate::constants::DEFAULT_RPC_URL;
 use clap::Parser;
 use dotenv::dotenv;
@@ -37,7 +37,10 @@ async fn main() -> eyre::Result<()> {
             fetch_and_persist_accounts(rpc_url).await?
         }
         Command::Cutoffs => display_cutoffs(),
-        Command::Simulate { amount, slot, ignore_errors } => simulate(amount, slot, ignore_errors)?,
+        Command::Spreads { starting_usdc } => calculate_spread(starting_usdc)?,
+        Command::Simulate { amount, direction, slot, ignore_errors } => {
+            simulate(direction, amount, slot, ignore_errors, true)?;
+        }
     }
 
     Ok(())

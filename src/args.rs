@@ -1,3 +1,4 @@
+use crate::swap::SwapDirection;
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Subcommand)]
@@ -8,11 +9,21 @@ pub enum Command {
     /// Print slot cutoff and other metadata from fetched solfi pool data
     Cutoffs,
 
-    /// Simulate a WSOL -> USDC swap in all the solfi wsol/usdc pools
+    /// Simulate spreads
+    Spreads {
+        /// Amount of USDC to base spreads off of
+        starting_usdc: f64,
+    },
+
+    /// Simulate a swap in all the solfi wsol/usdc pools
     Simulate {
-        /// Amount of SOL to swap to USDC
+        /// Amount of SOL or USDC to swap. Input mint depends on --direction
         #[arg(short, long)]
         amount: Option<f64>,
+
+        /// The direction of the swap
+        #[arg(short, long, default_value_t = SwapDirection::SolToUsdc)]
+        direction: SwapDirection,
 
         /// Slot to simulate at (default: uses metadata.json)
         #[arg(short, long)]
