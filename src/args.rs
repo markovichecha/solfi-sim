@@ -33,6 +33,17 @@ pub enum Command {
         #[arg(long)]
         ignore_errors: bool,
     },
+
+    /// Start simulation service
+    Service {
+        /// Port to run the JSON-RPC server on
+        #[arg(short, long, default_value = "8080")]
+        port: u16,
+
+        /// Fetch interval in milliseconds
+        #[arg(short = 'i', long, default_value = "400")]
+        fetch_interval_ms: u64,
+    },
 }
 
 #[derive(Debug, Parser)]

@@ -1,6 +1,7 @@
 mod args;
 mod cmd;
 mod constants;
+mod service;
 mod swap;
 mod types;
 mod utils;
@@ -8,6 +9,7 @@ mod utils;
 use crate::args::{App, Command};
 use crate::cmd::{calculate_spread, display_cutoffs, fetch_and_persist_accounts, simulate};
 use crate::constants::DEFAULT_RPC_URL;
+use crate::service::run_service;
 use clap::Parser;
 use dotenv::dotenv;
 use tracing_subscriber::layer::SubscriberExt;
@@ -25,15 +27,7 @@ async fn main() -> eyre::Result<()> {
 
     match cmd {
         Command::FetchAccounts => {
-            let rpc_url = {
-                let _ = dotenv().ok();
-                std::env::var("RPC_URL").ok().filter(|url| !url.trim().is_empty()).unwrap_or_else(
-                    || {
-                        tracing::warn!("No RPC_URL found in env. Using {}", DEFAULT_RPC_URL);
-                        DEFAULT_RPC_URL.to_string()
-                    },
-                )
-            };
+            let rpc_url = get_rpc_url();
             fetch_and_persist_accounts(rpc_url).await?
         }
         Command::Cutoffs => display_cutoffs(),
@@ -41,7 +35,19 @@ async fn main() -> eyre::Result<()> {
         Command::Simulate { amount, direction, slot, ignore_errors } => {
             simulate(direction, amount, slot, ignore_errors, true)?;
         }
+        Command::Service { port, fetch_interval_ms } => {
+            let rpc_url = get_rpc_url();
+            run_service(port, rpc_url, fetch_interval_ms).await?;
+        }
     }
 
     Ok(())
+}
+
+fn get_rpc_url() -> String {
+    let _ = dotenv().ok();
+    std::env::var("RPC_URL").ok().filter(|url| !url.trim().is_empty()).unwrap_or_else(|| {
+        tracing::warn!("No RPC_URL found in env. Using {}", DEFAULT_RPC_URL);
+        DEFAULT_RPC_URL.to_string()
+    })
 }

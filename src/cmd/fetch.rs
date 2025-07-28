@@ -7,6 +7,13 @@ use spl_associated_token_account::get_associated_token_address;
 
 pub async fn fetch_and_persist_accounts(rpc_url: String) -> eyre::Result<()> {
     let client = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
+
+    fetch_and_persist_accounts_with_client(&client).await?;
+
+    Ok(())
+}
+
+pub async fn fetch_and_persist_accounts_with_client(client: &RpcClient) -> eyre::Result<()> {
     let addresses: Vec<Pubkey> = [WSOL, USDC]
         .into_iter()
         .chain(SOLFI_MARKETS.iter().flat_map(|market| {
