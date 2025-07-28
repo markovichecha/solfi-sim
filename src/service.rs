@@ -82,7 +82,7 @@ async fn handle_jsonrpc(
     Json(req): Json<JsonRpcRequest>,
 ) -> Result<Json<JsonRpcResponse>, StatusCode> {
     let response = match req.method.as_str() {
-        "getPrices" => handle_get_prices(req.id).await,
+        "get_prices" => handle_get_prices(req.id).await,
         _ => Json(JsonRpcResponse {
             jsonrpc: "2.0".to_string(),
             result: None,
